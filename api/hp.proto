@@ -1,0 +1,211 @@
+syntax = "proto3";
+
+// Enums
+enum Language {
+    HINDI = 0;
+    ENGLISH = 1;
+    GARHWALI = 2;
+}
+
+enum Role {
+    ADMIN_ROLE = 0;
+    POST_APPROVAL_ROLE = 1;
+    USER_ROLE = 2;
+}
+
+enum ParentType {
+    POST = 0;
+    COMMENT = 1;
+}
+
+enum Field {
+    ID = 0;
+    MOBILE = 1;
+    EMAIL = 2;
+}
+
+enum Category {
+    SPORTS = 0;
+    NEWS = 1;
+    LIFESTYLE = 2;
+    INFOTAINMENT = 3; // It can be further broken down into food, places, monuments etc.
+    ENTERTAINMENT = 4; // It can be further broken down into short films, stories, songs etc.
+    TECHNOLOGY = 5;
+    SPIRITUAL = 6;
+}
+
+// Objects
+message Feed {
+    repeated string likes = 1; // Top 2 likes; going fwd we will return complete list of like obj
+    repeated Comment comments = 2; // Top 1 comment
+    int64 total_likes = 3; // need to review
+    int64 total_comments = 4;
+    Post post = 5;
+}
+
+message UserCategory {
+    string user_id = 1;
+    repeated Category categories = 3;
+}
+
+message Post {
+    string id = 1;
+    int64 updated_at = 2;
+    Type post_type = 3;
+    Category category = 4;
+    string creator_id = 5; //user_id, page
+    string heading = 6;
+    string body = 7;
+    map<string, string> resource_urls = 8;
+    map<string, string> labels = 9;
+    enum Type {
+        TEXT = 0;
+        IMAGE = 1;
+        VIDEO = 2;
+    }
+}
+
+message Like {
+    string id = 1;
+    string parent_id = 2;
+    string creator_id = 3;
+}
+
+message Comment {
+    string id = 1;
+    int64 updated_at = 2;
+    string creator_id = 3;
+    string parent_id = 4;
+    string body = 5;
+}
+
+// need to review
+//message Activity {
+//    string id = 1;
+//    bool is_active = 2;
+//    int64 create_time = 3;
+//    int64 update_time = 4;
+//    string parent_id = 5;
+//    ParentType parent_type = 6;
+//    string user_id = 10;
+//    int64 total_likes = 7;
+//    int64 total_comments = 8;
+//    map<string, string> labels = 9;
+//}
+
+message UserProfile {
+    string id = 1;
+    bool is_active = 2;
+    bool is_completed = 3;
+    int64 create_time = 4;
+    int64 update_time = 5;
+    string first_name = 6;
+    string last_name = 7;
+    Gender gender = 8;
+    Language language = 9;
+    string mobile = 10;
+    string email = 11;
+    string username = 12;
+    string password = 13;
+    string address = 14;
+    Role role = 15;
+    string display_picture_url = 16;
+    map<string, string> labels = 17;
+    enum Gender {
+        MALE = 0;
+        FEMALE = 1;
+        PREFER_NOT_TO_SAY = 3;
+    }
+}
+
+service API {
+
+    // used to perform CRUD on UserProfile
+    rpc UserProfile (UserProfileRequest) returns (UserProfileResponse) {
+    }
+
+    // used to perform CRUD on Post
+    rpc GetAPost (PostRequest) returns (PostResponse) {
+    }
+    rpc CreateAPost (PostRequest) returns (PostResponse) {
+    }
+    rpc DeleteAPost (PostRequest) returns (PostResponse) {
+    }
+    rpc UpdateAPost (PostRequest) returns (PostResponse) {
+    }
+    rpc GetAllPost (GetAllPostRequest) returns (GetAllPostResponse) {
+    }
+
+    // used to perform CRUD on Comment
+    rpc GetAComment (CommentRequest) returns (CommentResponse) {
+    }
+    rpc CreateAComment (CommentRequest) returns (CommentResponse) {
+    }
+    rpc DeleteAComment (CommentRequest) returns (CommentResponse) {
+    }
+    rpc UpdateAComment (CommentRequest) returns (CommentResponse) {
+    }
+
+    // used to perform CRUD on Like
+    rpc GetALike (LikeRequest) returns (LikeResponse) {
+    }
+    rpc CreateALike (LikeRequest) returns (LikeResponse) {
+    }
+    rpc DeleteALike (LikeRequest) returns (LikeResponse) {
+    }
+}
+
+message GetAllPostRequest {
+    string user_id = 1;
+}
+
+message GetAllPostResponse {
+    string message = 1;
+    repeated Post posts = 2;
+}
+
+message CommentRequest {
+    Comment comment = 1;
+}
+
+message CommentResponse {
+    bool success = 1;
+    Comment comment = 2;
+}
+
+message LikeRequest {
+    Like like = 1;
+}
+
+message LikeResponse {
+    bool success = 1;
+    Like like = 2;
+}
+
+message PostRequest {
+    Post post = 1;
+}
+
+message PostResponse {
+    bool success = 1;
+    Post post = 2;
+}
+
+message UserProfileRequest {
+    string search_value = 1;
+    Field search_field = 2;
+    UserProfile profile = 3;
+}
+
+message UserProfileResponse {
+    bool success = 1;
+    UserProfile profile = 2;
+}
+
+message FeedRequest {
+    string user_id = 1;
+}
+
+message FeedResponse {
+    repeated Feed user_feeds = 1;
+}

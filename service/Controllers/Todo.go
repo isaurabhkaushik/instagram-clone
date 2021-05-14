@@ -3,8 +3,8 @@ package Controllers
 import (
 	"net/http"
 
-	"github.com/ektagarg/gin-gorm-todo-app/Models"
 	"github.com/gin-gonic/gin"
+	"github.com/isaurabhkaushik/hp/service/Models"
 )
 
 func GetTodos(c *gin.Context) {

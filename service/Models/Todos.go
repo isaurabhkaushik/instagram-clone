@@ -3,7 +3,7 @@ package Models
 import (
 	"fmt"
 
-	"github.com/ektagarg/gin-gorm-todo-app/Config"
+	"github.com/isaurabhkaushik/hp/service/Config"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -38,3 +38,4 @@ func DeleteATodo(todo *Todo, id string) (err error) {
 	Config.DB.Where("id = ?", id).Delete(todo)
 	return nil
 }
+

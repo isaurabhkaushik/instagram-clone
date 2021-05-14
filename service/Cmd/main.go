@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/ektagarg/gin-gorm-todo-app/Config"
-	"github.com/ektagarg/gin-gorm-todo-app/Models"
-	"github.com/ektagarg/gin-gorm-todo-app/Routes"
+	"github.com/isaurabhkaushik/hp/service/Config"
+	"github.com/isaurabhkaushik/hp/service/Models"
+	"github.com/isaurabhkaushik/hp/service/Routes"
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,7 +15,7 @@ func main() {
 	Config.DB, err = gorm.Open("postgres", Config.DbURL(Config.BuildDBConfig()))
 
 	if err != nil {
-		fmt.Println("statuse: ", err)
+		fmt.Println("status: ", err)
 	}
 
 	defer Config.DB.Close()
