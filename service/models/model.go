@@ -1,20 +1,8 @@
-package Models
+package models
 
 import (
-	"database/sql/driver"
-	"encoding/json"
 	"time"
 )
-
-type Todo struct {
-	ID          uint   `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
-func (b *Todo) TableName() string {
-	return "todo"
-}
 
 type Like struct {
 	ID         string    `gorm:"primaryKey" json:"id"`
@@ -61,21 +49,26 @@ func (b *Post) TableName() string {
 	return "posts"
 }
 
-type MapOfStringToString map[string]string
-
-// encodes to sql value
-func (c MapOfStringToString) Value() (driver.Value, error) {
-	return json.Marshal(c)
+type UserProfile struct {
+	ID              string              `gorm:"primaryKey" json:"id"`
+	CreateTime      time.Time           `gorm:"autoCreateTime" json:"create_time"`
+	UpdateTime      time.Time           `gorm:"autoUpdateTime" json:"update_time"`
+	IsActive        bool                `json:"is_active"`
+	IsCompleted     bool                `json:"is_completed"`
+	FirstName       string              `json:"first_name"`
+	LastName        string              `json:"last_name"`
+	Gender          string              `json:"gender"`
+	Language        string              `json:"language"`
+	Mobile          string              `json:"mobile"`
+	Email           string              `json:"email"`
+	Username        string              `json:"username"`
+	Password        string              `json:"password"`
+	Address         string              `json:"address"`
+	Role            string              `json:"role"`
+	ProfileImageUrl string              `json:"profile_image_url"`
+	Labels          MapOfStringToString `json:"labels"`
 }
 
-// decodes sql value
-func (s *MapOfStringToString) Scan(src interface{}) error {
-	jsonData, ok := src.([]byte)
-	if !ok {
-		s = nil
-		return nil
-	}
-
-	json.Unmarshal(jsonData, s)
-	return nil
+func (b *UserProfile) TableName() string {
+	return "user_profile"
 }

@@ -1,7 +1,7 @@
-package Models
+package models
 
 import (
-	"github.com/isaurabhkaushik/hp/service/Config"
+	"github.com/isaurabhkaushik/hp/service/config"
 	"time"
 )
 
@@ -10,19 +10,19 @@ import (
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func CreateALike(like *Like) (err error) {
-	if err = Config.DB.Create(like).Error; err != nil {
+	if err = config.DB.Create(like).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func DeleteALike(like *Like) (err error) {
-	Config.DB.Model(like).Update("is_active", false).Update("update_time", time.Now())
+	config.DB.Model(like).Update("is_active", false).Update("update_time", time.Now())
 	return nil
 }
 
 func GetALike(like *Like, id string) (err error) {
-	if err := Config.DB.Where("id = ? and is_active = true", id).First(like).Error; err != nil {
+	if err := config.DB.Where("id = ? and is_active = true", id).First(like).Error; err != nil {
 		return err
 	}
 	return nil
@@ -33,26 +33,26 @@ func GetALike(like *Like, id string) (err error) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func CreateAComment(comment *Comment) (err error) {
-	if err = Config.DB.Create(comment).Error; err != nil {
+	if err = config.DB.Create(comment).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func DeleteAComment(comment *Comment) (err error) {
-	Config.DB.Model(comment).Update("is_active", false).Update("update_time", time.Now())
+	config.DB.Model(comment).Update("is_active", false).Update("update_time", time.Now())
 	return nil
 }
 
 func GetAComment(comment *Comment, id string) (err error) {
-	if err := Config.DB.Where("id = ? and is_active = true", id).First(comment).Error; err != nil {
+	if err := config.DB.Where("id = ? and is_active = true", id).First(comment).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func UpdateAComment(comment *Comment) (err error) {
-	Config.DB.Save(comment)
+	config.DB.Save(comment)
 	return nil
 }
 
@@ -61,25 +61,32 @@ func UpdateAComment(comment *Comment) (err error) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func CreateAPost(post *Post) (err error) {
-	if err = Config.DB.Create(post).Error; err != nil {
+	if err = config.DB.Create(post).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func DeleteAPost(post *Post) (err error) {
-	Config.DB.Model(post).Update("is_active", false).Update("update_time", time.Now())
+	config.DB.Model(post).Update("is_active", false).Update("update_time", time.Now())
 	return nil
 }
 
 func GetAPost(post *Post, id string) (err error) {
-	if err := Config.DB.Where("id = ? and is_active = true", id).First(post).Error; err != nil {
+	if err := config.DB.Where("id = ? and is_active = true", id).First(post).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func UpdateAPost(post *Post) (err error) {
-	Config.DB.Save(post)
+	config.DB.Save(post)
+	return nil
+}
+
+func GetAllPosts(posts *[]Post) (err error) {
+	if err := config.DB.Where("is_active = true").Find(posts).Error; err != nil {
+		return err
+	}
 	return nil
 }

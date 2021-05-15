@@ -1,11 +1,12 @@
-package Controllers
+package controllers
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	hp "github.com/isaurabhkaushik/hp/api/go"
-	"github.com/isaurabhkaushik/hp/service/Models"
+	"github.com/isaurabhkaushik/hp/service/models"
 	"github.com/jinzhu/gorm"
+	"log"
 	"net/http"
 	"time"
 )
@@ -18,9 +19,10 @@ func CreateALike(c *gin.Context) {
 	err := c.BindJSON(&req)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	like := &Models.Like{
+	like := &models.Like{
 		ID:         uuid.New().String(),
 		ParentId:   req.GetLike().GetParentId(),
 		CreatorId:  req.GetLike().GetCreatorId(),
@@ -29,14 +31,15 @@ func CreateALike(c *gin.Context) {
 		UpdateTime: time.Now(),
 	}
 
-	err = Models.CreateALike(like)
+	err = models.CreateALike(like)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	resp := &hp.LikeResponse{
 		Success: true,
-		Like:    Models.ToDomainLike(like),
+		Like:    models.ToDomainLike(like),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -50,15 +53,18 @@ func DeleteALike(c *gin.Context) {
 
 	if req.GetLike().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	var like *Models.Like
-	like = Models.ToModelLike(req.GetLike())
-	if err := Models.DeleteALike(like); err != nil {
+	var like *models.Like
+	like = models.ToModelLike(req.GetLike())
+	if err := models.DeleteALike(like); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -77,21 +83,24 @@ func GetALike(c *gin.Context) {
 
 	if req.GetLike().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	like := &Models.Like{}
+	like := &models.Like{}
 
-	if err := Models.GetALike(like, req.GetLike().GetId()); err != nil {
+	if err := models.GetALike(like, req.GetLike().GetId()); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
 	resp := &hp.LikeResponse{
 		Success: true,
-		Like:    Models.ToDomainLike(like),
+		Like:    models.ToDomainLike(like),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -106,7 +115,7 @@ func CreateAComment(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
-	comment := &Models.Comment{
+	comment := &models.Comment{
 		ID:         uuid.New().String(),
 		IsActive:   true,
 		CreateTime: time.Now(),
@@ -116,14 +125,15 @@ func CreateAComment(c *gin.Context) {
 		Body:       req.GetComment().GetBody(),
 	}
 
-	err = Models.CreateAComment(comment)
+	err = models.CreateAComment(comment)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	resp := &hp.CommentResponse{
 		Success: true,
-		Comment: Models.ToDomainComment(comment),
+		Comment: models.ToDomainComment(comment),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -137,15 +147,18 @@ func DeleteAComment(c *gin.Context) {
 
 	if req.GetComment().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	var comment *Models.Comment
-	comment = Models.ToModelComment(req.GetComment())
-	if err := Models.DeleteAComment(comment); err != nil {
+	var comment *models.Comment
+	comment = models.ToModelComment(req.GetComment())
+	if err := models.DeleteAComment(comment); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -164,21 +177,24 @@ func GetAComment(c *gin.Context) {
 
 	if req.GetComment().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	comment := &Models.Comment{}
+	comment := &models.Comment{}
 
-	if err := Models.GetAComment(comment, req.GetComment().GetId()); err != nil {
+	if err := models.GetAComment(comment, req.GetComment().GetId()); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
 	resp := &hp.CommentResponse{
 		Success: true,
-		Comment: Models.ToDomainComment(comment),
+		Comment: models.ToDomainComment(comment),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -188,29 +204,33 @@ func UpdateAComment(c *gin.Context) {
 	err := c.BindJSON(&req)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	comment := &Models.Comment{}
+	comment := &models.Comment{}
 
-	if err := Models.GetAComment(comment, req.GetComment().GetId()); err != nil {
+	if err := models.GetAComment(comment, req.GetComment().GetId()); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
 	comment.Body = req.GetComment().GetBody()
 	comment.UpdateTime = time.Now()
 
-	err = Models.UpdateAComment(comment)
+	err = models.UpdateAComment(comment)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
+		return
 	}
 
 	resp := &hp.CommentResponse{
 		Success: true,
-		Comment: Models.ToDomainComment(comment),
+		Comment: models.ToDomainComment(comment),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -222,10 +242,12 @@ func CreateAPost(c *gin.Context) {
 	var req *hp.PostRequest
 	err := c.BindJSON(&req)
 	if err != nil {
+		log.Printf("CreateAPost: binding JSON failed with error: %v", err)
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	post := &Models.Post{
+	post := &models.Post{
 		ID:           uuid.New().String(),
 		CreateTime:   time.Now(),
 		UpdateTime:   time.Now(),
@@ -233,20 +255,21 @@ func CreateAPost(c *gin.Context) {
 		IsActive:     true,
 		Body:         req.GetPost().GetBody(),
 		Heading:      req.GetPost().GetHeading(),
-		Type:         req.GetPost().GetPostType().String(),
-		Category:     req.GetPost().GetCategory().String(),
+		Type:         req.GetPost().GetPostType(),
+		Category:     req.GetPost().GetCategory(),
 		ResourceUrls: req.GetPost().GetResourceUrls(),
 		Labels:       req.GetPost().GetLabels(),
 	}
 
-	err = Models.CreateAPost(post)
+	err = models.CreateAPost(post)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	resp := &hp.PostResponse{
 		Success: true,
-		Post:    Models.ToDomainPost(post),
+		Post:    models.ToDomainPost(post),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -260,15 +283,18 @@ func DeleteAPost(c *gin.Context) {
 
 	if req.GetPost().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	var post *Models.Post
-	post = Models.ToModelPost(req.GetPost())
-	if err := Models.DeleteAPost(post); err != nil {
+	var post *models.Post
+	post = models.ToModelPost(req.GetPost())
+	if err := models.DeleteAPost(post); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -287,20 +313,23 @@ func GetAPost(c *gin.Context) {
 
 	if req.GetPost().GetId() == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	post := &Models.Post{}
+	post := &models.Post{}
 
-	if err := Models.GetAPost(post, req.GetPost().GetId()); err != nil {
+	if err := models.GetAPost(post, req.GetPost().GetId()); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 	resp := &hp.PostResponse{
 		Success: true,
-		Post:    Models.ToDomainPost(post),
+		Post:    models.ToDomainPost(post),
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -310,33 +339,71 @@ func UpdateAPost(c *gin.Context) {
 	err := c.BindJSON(&req)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
-	post := &Models.Post{}
+	post := &models.Post{}
 
-	if err := Models.GetAPost(post, req.GetPost().GetId()); err != nil {
+	if err := models.GetAPost(post, req.GetPost().GetId()); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		} else {
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 	}
 
 	post.Body = req.GetPost().GetBody()
-	post.Type = req.GetPost().GetPostType().String()
+	post.Type = req.GetPost().GetPostType()
 	post.Labels = req.GetPost().GetLabels()
 	post.ResourceUrls = req.GetPost().GetResourceUrls()
 	post.Heading = req.GetPost().GetHeading()
 	post.UpdateTime = time.Now()
 
-	err = Models.UpdateAPost(post)
+	err = models.UpdateAPost(post)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
+		return
 	}
 
 	resp := &hp.PostResponse{
 		Success: true,
-		Post:    Models.ToDomainPost(post),
+		Post:    models.ToDomainPost(post),
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func GetAllPost(c *gin.Context) {
+	req := &hp.GetAllPostRequest{
+		UserId: c.Params.ByName("id"),
+	}
+
+	if req.GetUserId() == "" {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	posts := &[]models.Post{}
+
+	if err := models.GetAllPosts(posts); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		} else {
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	ApiPosts := make([]*hp.Post, 0)
+	for _, p := range *posts {
+		ApiPosts = append(ApiPosts, models.ToDomainPost(&p))
+	}
+
+	resp := &hp.GetAllPostResponse{
+		Count: int64(len(ApiPosts)),
+		Posts: ApiPosts,
 	}
 	c.JSON(http.StatusOK, resp)
 }

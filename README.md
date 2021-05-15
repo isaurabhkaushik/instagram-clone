@@ -5,9 +5,6 @@ It is a just simple REST API with Go using:
 
 ## Installation & Run
 ```bash
-# Download this project
-$ go get github.com/go-sql-driver/mysql
-
 # Download Gin Framework
 $ go get github.com/gin-gonic/gin
 
@@ -16,21 +13,9 @@ $ go get github.com/jinzhu/gorm
 ```
 
 ## DB Setup
-1. Go to Config/Database.go
+1. Go to config/database.go
 2. Update DBName, User, Password and Host, Port according to your database configuration
 
-## API list
+## Postman Collection
 
-* `GET` : Get all todos
-* `POST` : Create a todo
-* `GET` : Get a todo
-* `PUT` : Update a todo
-* `DELETE` : Delete a todo
-
-## Post Params
-```
-{
-	"name": "Groceries shopping",
-	"description": "Biscuits, Tea, Milk, Soap, Powder",
-}
-```
+`https://www.getpostman.com/collections/928dbfd983210a88b1e7`

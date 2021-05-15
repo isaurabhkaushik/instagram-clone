@@ -34,6 +34,18 @@ enum Category {
     SPIRITUAL = 6;
 }
 
+enum PostType {
+    TEXT = 0;
+    IMAGE = 1;
+    VIDEO = 2;
+}
+
+enum Gender {
+    MALE = 0;
+    FEMALE = 1;
+    PREFER_NOT_TO_SAY = 3;
+}
+
 // Objects
 message Feed {
     repeated string likes = 1; // Top 2 likes; going fwd we will return complete list of like obj
@@ -51,18 +63,13 @@ message UserCategory {
 message Post {
     string id = 1;
     int64 updated_at = 2;
-    Type post_type = 3;
-    Category category = 4;
+    string post_type = 3;
+    string category = 4;
     string creator_id = 5; //user_id, page
     string heading = 6;
     string body = 7;
     map<string, string> resource_urls = 8;
     map<string, string> labels = 9;
-    enum Type {
-        TEXT = 0;
-        IMAGE = 1;
-        VIDEO = 2;
-    }
 }
 
 message Like {
@@ -95,33 +102,33 @@ message Comment {
 
 message UserProfile {
     string id = 1;
-    bool is_active = 2;
-    bool is_completed = 3;
-    int64 create_time = 4;
-    int64 update_time = 5;
-    string first_name = 6;
-    string last_name = 7;
-    Gender gender = 8;
-    Language language = 9;
-    string mobile = 10;
-    string email = 11;
-    string username = 12;
-    string password = 13;
-    string address = 14;
-    Role role = 15;
-    string display_picture_url = 16;
-    map<string, string> labels = 17;
-    enum Gender {
-        MALE = 0;
-        FEMALE = 1;
-        PREFER_NOT_TO_SAY = 3;
-    }
+    bool is_completed = 2;
+    int64 create_time = 3;
+    int64 update_time = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string gender = 7;
+    string language = 8;
+    string mobile = 9;
+    string email = 10;
+    string username = 11;
+    string password = 12;
+    string address = 13;
+    string role = 14;
+    string profile_image_url = 15;
+    map<string, string> labels = 16;
 }
 
 service API {
 
     // used to perform CRUD on UserProfile
-    rpc UserProfile (UserProfileRequest) returns (UserProfileResponse) {
+    rpc GetAUserProfile (UserProfileRequest) returns (UserProfileResponse) {
+    }
+    rpc CreateAUserProfile (UserProfileRequest) returns (UserProfileResponse) {
+    }
+    rpc DeleteAUserProfile (UserProfileRequest) returns (UserProfileResponse) {
+    }
+    rpc UpdateAUserProfile (UserProfileRequest) returns (UserProfileResponse) {
     }
 
     // used to perform CRUD on Post
@@ -160,7 +167,7 @@ message GetAllPostRequest {
 }
 
 message GetAllPostResponse {
-    string message = 1;
+    int64 count = 1;
     repeated Post posts = 2;
 }
 
@@ -193,7 +200,7 @@ message PostResponse {
 
 message UserProfileRequest {
     string search_value = 1;
-    Field search_field = 2;
+    string search_field = 2;
     UserProfile profile = 3;
 }
 

@@ -1,5 +1,5 @@
 default: run
 
 run:
-	@go run Cmd/main.go
+	@go run cmd/main.go
 

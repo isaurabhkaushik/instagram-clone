@@ -1,4 +1,4 @@
-package Config
+package config
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func BuildDBConfig() *DBConfig {
 		Port:     5432,
 		User:     "saurabhkaushik",
 		DBName:   "testdb",
-		Password: "",
+		Password: "123456",
 	}
 	return &dbConfig
 }
