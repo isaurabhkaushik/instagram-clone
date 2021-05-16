@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"log"
 )
 
 var DB *gorm.DB
@@ -16,13 +17,13 @@ type DBConfig struct {
 	Password string
 }
 
-func BuildDBConfig() *DBConfig {
+func BuildDBConfig(conf *Config) *DBConfig {
 	dbConfig := DBConfig{
-		Host:     "localhost",
-		Port:     5432,
-		User:     "saurabhkaushik",
-		DBName:   "testdb",
-		Password: "123456",
+		Host:     conf.DB.Host,
+		Port:     conf.DB.Port,
+		User:     conf.DB.Username,
+		DBName:   conf.DB.Dbname,
+		Password: conf.DB.Password,
 	}
 	return &dbConfig
 }
@@ -36,4 +37,19 @@ func DbURL(dbConfig *DBConfig) string {
 		dbConfig.Port,
 		dbConfig.DBName,
 	)
+}
+
+func InitDatabase(conf *Config) *gorm.DB {
+	DB, err := gorm.Open(
+		"postgres",
+		DbURL(
+			BuildDBConfig(conf),
+		),
+	)
+	if err != nil {
+		log.Printf("database connection failed with error: %v ", err)
+		panic("database failed!")
+	}
+
+	return DB
 }

@@ -4,28 +4,19 @@ import (
 	"github.com/isaurabhkaushik/hp/service/config"
 	"github.com/isaurabhkaushik/hp/service/models"
 	"github.com/isaurabhkaushik/hp/service/routes"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
-	"log"
 )
-
-var err error
 
 func main() {
 
-	config.DB, err = gorm.Open(
-		"postgres",
-		config.DbURL(
-			config.BuildDBConfig(),
-		),
-	)
-	if err != nil {
-		log.Printf("database connection failed with error: %v ", err)
-		panic("database failed!")
-	}
+	// load config
+	conf := config.LoadConfig("config.yml")
 
-	defer config.DB.Close()
-	config.DB.AutoMigrate(
+	// Initialize database
+	db := config.InitDatabase(conf)
+
+	defer db.Close()
+	db.AutoMigrate(
 		&models.Like{},
 		&models.Post{},
 		&models.Comment{},
